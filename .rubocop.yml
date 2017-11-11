@@ -1,0 +1,12 @@
+AllCops:
+  Excludes:
+    - bin/*
+    - config/*
+    - config/environments/*
+    - Gemfile
+
+Metrics/LineLength:
+  Max: 120
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
