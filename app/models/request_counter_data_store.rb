@@ -6,6 +6,7 @@
 # It is currently using ActiveSupport::Cache::MemoryStore for the data store.
 class RequestCounterDataStore
   include Singleton
+  EXPIRES_AT_KEY_SUFFIX = 'expires_at'.freeze
 
   def initialize
     @data_store = ActiveSupport::Cache::MemoryStore.new
@@ -25,6 +26,7 @@ class RequestCounterDataStore
 
   def create(key, value, expiry)
     @data_store.write(key, value, expires_in: expiry)
+    @data_store.write(expires_at_key(key), Time.now + expiry, expires_in: expiry)
   end
 
   def delete_matched(partial_key)
@@ -33,5 +35,15 @@ class RequestCounterDataStore
 
   def delete(key)
     @data_store.delete(key)
+  end
+
+  def expires_at_for(key)
+    @data_store.read(expires_at_key(key))
+  end
+
+  private
+
+  def expires_at_key(key)
+    "#{key}_#{EXPIRES_AT_KEY_SUFFIX}"
   end
 end

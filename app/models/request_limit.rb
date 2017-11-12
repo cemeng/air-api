@@ -24,6 +24,11 @@ class RequestLimit
     @request_counter.count > ALLOWED_REQUESTS
   end
 
+  # returns in seconds when the request limit for an IP address expires
+  def expires_in_seconds
+    @request_counter.expires_in_seconds
+  end
+
   class IPAddressInvalidError < StandardError
   end
 

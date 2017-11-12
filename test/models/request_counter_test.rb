@@ -3,6 +3,7 @@ require 'minitest/autorun'
 
 class ReguestCounterTest < ActiveSupport::TestCase
   extend Minitest::Spec::DSL
+  include ActiveSupport::Testing::TimeHelpers
 
   let(:ip) { '200.1.1.1' }
   let(:request_method) { 'GET' }
@@ -31,6 +32,15 @@ class ReguestCounterTest < ActiveSupport::TestCase
     it 'deletes the request counter' do
       request_counter.delete
       assert_nil request_counter.increment
+    end
+  end
+
+  describe '#expires_in_seconds' do
+    it 'returns in seconds when will the request counter expire' do
+      request_counter
+      travel_to(Time.now + 30.minutes) do
+        assert_equal 30.minutes.to_i, request_counter.expires_in_seconds
+      end
     end
   end
 

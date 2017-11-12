@@ -6,6 +6,10 @@
 class RequestCounter
   KEY_PREFIX = 'request_counter_'.freeze
 
+  def self.delete_all
+    RequestCounterDataStore.instance.delete_matched("#{KEY_PREFIX}*")
+  end
+
   def initialize(ip:, method:, endpoint:, expiry:)
     @ip = ip
     @method = method
@@ -25,8 +29,9 @@ class RequestCounter
     data_store.delete(key)
   end
 
-  def self.delete_all
-    RequestCounterDataStore.instance.delete_matched("#{KEY_PREFIX}*")
+  # returns in seconds when this RequestCounter will expire
+  def expires_in_seconds
+    (data_store.expires_at_for(key) - Time.now).round
   end
 
   def key
