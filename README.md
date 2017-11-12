@@ -1,25 +1,46 @@
-# README
+## Air API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This project holds the API implementation for Air company.
 
-Things you may want to cover:
+## Pre-requisites
 
-* Ruby version
+This project is written and tested using Rails 5.1.1 and Ruby 2.3.5.
 
-* System dependencies
+Ruby 2.2+ version is the hard requirement for this project.
 
-* Configuration
+To check you Ruby version run:
 
-* Database creation
+```
+$ ruby -v
+```
 
-* Database initialization
+To learn how to install ruby visit [https://www.ruby-lang.org/en/installation/](https://www.ruby-lang.org/en/installation/).
 
-* How to run the test suite
+## Getting Started
 
-* Services (job queues, cache servers, search engines, etc.)
+Below is the instruction on getting the project running in MacOS:
 
-* Deployment instructions
+```
+$ git clone https://github.com/cemeng/air-api
+$ cd air-api
+$ bundle install
+```
 
-* ...
-# air-api
+## Tests
+
+The test files are in ```test``` directory.
+
+To run all tests:
+
+```
+$ rake test
+```
+
+An exmaple to run individual test:
+
+```
+$ rails test test/models/my_model_test.rb
+```
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
