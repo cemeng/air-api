@@ -1,49 +1,45 @@
-# RequestCounter is a data store that captures how many time a request from an IP address
-# comes to an API endpoint. The request counter will be cleared after the specified expiry time.
+# RequestCounter represents an entry in RequestCounterDataStore, this entry holds how many time
+# a request from an IP address# comes to an API endpoint.
 #
-# The public method for this class is .find_or_create.
-# Example:
-#   RequestCounter.find_or_create(ip: '127.0.0.1', method: 'GET', endpoint: '/', expiry: 3600)
+# A RequestCounter entry will be cleared after a specified expiry time, the expiry time
+# is specified when the entry is created.
 class RequestCounter
-  # A factory method
-  def self.find_or_create(ip:, method:, endpoint:, expiry:)
-    new(ip: ip, method: method, endpoint: endpoint, expiry: expiry)
-  end
+  KEY_PREFIX = 'request_counter_'.freeze
 
   def initialize(ip:, method:, endpoint:, expiry:)
     @ip = ip
     @method = method
     @endpoint = endpoint
-    create_counter(expiry) unless datastore.read(counter_cache_key)
+    create_counter(expiry) unless data_store.read(key)
   end
 
   def increment
-    datastore.increment(counter_cache_key)
+    data_store.increment(key)
   end
 
   def count
-    datastore.read(counter_cache_key)
+    data_store.read(key)
   end
 
   def delete
-    datastore.delete(counter_cache_key)
+    data_store.delete(key)
+  end
+
+  def self.delete_all
+    RequestCounterDataStore.instance.delete_matched("#{KEY_PREFIX}*")
+  end
+
+  def key
+    "#{KEY_PREFIX}_#{@ip}_#{@method}_#{@endpoint}"
   end
 
   private
 
   def create_counter(expiry)
-    datastore.write(counter_cache_key, 0, expires_in: expiry)
+    data_store.write(key, 0, expires_in: expiry)
   end
 
-  def datastore
-    Rails.cache
-  end
-
-  def cache_key_prefix
-    "#{@ip}_#{@method}_#{@endpoint}"
-  end
-
-  def counter_cache_key
-    "#{cache_key_prefix}_counter"
+  def data_store
+    RequestCounterDataStore.instance
   end
 end
