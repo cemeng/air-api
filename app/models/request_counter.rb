@@ -36,7 +36,7 @@ class RequestCounter
   private
 
   def create_counter(expiry)
-    data_store.write(key, 0, expires_in: expiry)
+    data_store.create(key, 0, expiry)
   end
 
   def data_store

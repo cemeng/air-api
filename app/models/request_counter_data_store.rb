@@ -23,8 +23,8 @@ class RequestCounterDataStore
     @data_store.read(key)
   end
 
-  def write(key, value, options = {})
-    @data_store.write(key, value, options)
+  def create(key, value, expiry)
+    @data_store.write(key, value, expires_in: expiry)
   end
 
   def delete_matched(partial_key)
