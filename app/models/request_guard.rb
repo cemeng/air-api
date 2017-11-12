@@ -14,19 +14,26 @@ class RequestGuard
   # @params endpoint [String]. This the endpoint to be protected. The param is optional,
   #   when it is not supplied, it means request by an IP will be cumulatively counted
   #   for all endpoints.
-  def self.allow_for?(ip:, method: nil, endpoint: nil)
+  def initialize(ip:, method: nil, endpoint: nil)
     validate_ip_address!(ip)
-    data_store = RequestCounterDataStore.instance
-    request_counter = data_store.find_or_create(ip: ip, method: method, endpoint: endpoint, expiry: EXPIRY)
-    request_counter.increment
-    request_counter.count < ALLOWED_REQUESTS
+    @request_counter = data_store.find_or_create(ip: ip, method: method, endpoint: endpoint, expiry: EXPIRY)
+    @request_counter.increment
+  end
+
+  def exceeded?
+    @request_counter.count > ALLOWED_REQUESTS
   end
 
   class IPAddressInvalidError < StandardError
   end
 
-  def self.validate_ip_address!(ip)
+  private
+
+  def validate_ip_address!(ip)
     raise IPAddressInvalidError unless Resolv::IPv4::Regex.match?(ip)
   end
-  private_class_method :validate_ip_address!
+
+  def data_store
+    RequestCounterDataStore.instance
+  end
 end
