@@ -1,10 +1,10 @@
 require 'resolv'
-# RequestGuard checks whether an IP address shall be allowed to access
+# RequestLimit checks whether an IP address shall be allowed to access
 # an API endpoint.
 # An IP address is allowed access to an IP address when
-# it request counts < RequestGuard::ALLOWED_REQUESTS within RequestGuard::EXPIRY
+# it request counts < RequestLimit::ALLOWED_REQUESTS within RequestLimit::EXPIRY
 # The main method of this class is allow_for?
-class RequestGuard
+class RequestLimit
   EXPIRY = 1.hour
   ALLOWED_REQUESTS = 100
 
